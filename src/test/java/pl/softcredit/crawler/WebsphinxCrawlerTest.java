@@ -9,12 +9,18 @@ public class WebsphinxCrawlerTest {
     public void runCrawling() {
         try {
 
+            long startTime = System.currentTimeMillis();
+
             WebsphinxCrawler crawler =
-                    new WebsphinxCrawler("http://www.national-geographic.pl/", 1);
-            for (String url : crawler.getUrls()) {
+                    WebsphinxCrawler.instance("http://www.national-geographic.pl/");
+
+            long stopTime = System.currentTimeMillis();
+            System.out.println("Crawling time:" + ((stopTime - startTime) / 1000));
+
+            for (String url : crawler.getLinks()) {
                 System.out.println(url);
             }
-            System.out.println("Links:" + crawler.getUrls().size());
+            System.out.println("Links:" + crawler.getLinks().size());
         } catch (Exception e) {
             System.out.println("Cannot crawl site: " + e.getMessage());
         }
