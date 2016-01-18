@@ -27,12 +27,13 @@ public class WebsphinxCrawler extends Crawler {
     private static int MAX_THREADS = 6;
 
     private Set<String> links = new HashSet<String>();
-    private DownloadParameters downloadParameters = new DownloadParameters();
+    private static DownloadParameters downloadParameters = new DownloadParameters();
 
-    private WebsphinxCrawler(String url, int depth) throws MalformedURLException {
+
+    private static WebsphinxCrawler websphinxCrawler = new WebsphinxCrawler();
+
+    private WebsphinxCrawler() {
         super();
-
-        setRoots(new Link[]{new Link(new URL(url))});
 
         downloadParameters = downloadParameters.changeObeyRobotExclusion(OBEY_ROBOT_EXCLUSION);
         downloadParameters = downloadParameters.changeUserAgent(USER_AGENT);
@@ -43,27 +44,33 @@ public class WebsphinxCrawler extends Crawler {
         downloadParameters = downloadParameters.changeMaxThreads(MAX_THREADS);
 
         setDownloadParameters(downloadParameters);
-
-        setLinkType(LINK_TYPES);
-        setMaxDepth(depth);
-
-        run();
-
         links.addAll(getLinks());
-
     }
 
-    public static WebsphinxCrawler instance(String url) throws MalformedURLException {
-        return new WebsphinxCrawler(url, MAX_DEPTH);
+    public static WebsphinxCrawler instance() throws MalformedURLException {
+        return websphinxCrawler;
     }
 
-    //TODO refactor to predicate?
-    //    @Override
-    //    public boolean shouldVisit(Link link) {
-    //        String host = link.getHost();
-    //        String domain = "";
-    //        return host.contains(domain) && (host.contains(domain));
-    //    }
+
+    public static WebsphinxCrawler withCrawlTimeout(int crawlTimeout) throws MalformedURLException {
+        downloadParameters = downloadParameters.changeCrawlTimeout(crawlTimeout);
+        return websphinxCrawler;
+    }
+
+    public static WebsphinxCrawler withLinkTypes(String[] linkTypes) throws MalformedURLException {
+        websphinxCrawler.setLinkType(linkTypes);
+        return websphinxCrawler;
+    }
+
+    public static WebsphinxCrawler withUrl(String url) throws MalformedURLException {
+        websphinxCrawler.setRoots(new Link[]{new Link(new URL(url))});
+        return websphinxCrawler;
+    }
+
+    public static WebsphinxCrawler withDepth(int depth) throws MalformedURLException {
+        websphinxCrawler.setMaxDepth(depth);
+        return websphinxCrawler;
+    }
 
 
     @Override

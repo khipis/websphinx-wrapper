@@ -12,15 +12,15 @@ public class WebsphinxCrawlerTest {
             long startTime = System.currentTimeMillis();
 
             WebsphinxCrawler crawler =
-                    WebsphinxCrawler.instance("http://www.national-geographic.pl/");
+                    WebsphinxCrawler.instance().withUrl("http://www.national-geographic.pl/");
+            crawler.run();
 
             long stopTime = System.currentTimeMillis();
             System.out.println("Crawling time:" + ((stopTime - startTime) / 1000));
 
-            for (String url : crawler.getLinks()) {
-                System.out.println(url);
-            }
+            crawler.getLinks().forEach(System.out::println);
             System.out.println("Links:" + crawler.getLinks().size());
+
         } catch (Exception e) {
             System.out.println("Cannot crawl site: " + e.getMessage());
         }
