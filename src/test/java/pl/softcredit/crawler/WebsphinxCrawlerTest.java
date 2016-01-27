@@ -12,7 +12,7 @@ public class WebsphinxCrawlerTest {
             long startTime = System.currentTimeMillis();
 
             WebsphinxCrawler crawler =
-                    WebsphinxCrawler.instance().withUrl("http://www.national-geographic.pl/");
+                    WebsphinxCrawler.crawler().withUrl("http://www.national-geographic.pl/");
             crawler.run();
 
             long stopTime = System.currentTimeMillis();

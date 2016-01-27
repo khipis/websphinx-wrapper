@@ -35,29 +35,63 @@ public class WebsphinxCrawler extends Crawler {
     private WebsphinxCrawler() {
         super();
 
+        downloadParameters = downloadParameters.changeCrawlTimeout(CRAWL_TIMEOUT);
         downloadParameters = downloadParameters.changeObeyRobotExclusion(OBEY_ROBOT_EXCLUSION);
         downloadParameters = downloadParameters.changeUserAgent(USER_AGENT);
         downloadParameters = downloadParameters.changeMaxPageSize(MAX_PAGE_SIZE);
         downloadParameters = downloadParameters.changeDownloadTimeout(DOWNLOAD_TIMEOUT);
-        downloadParameters = downloadParameters.changeCrawlTimeout(CRAWL_TIMEOUT);
         downloadParameters = downloadParameters.changeUseCaches(USE_CACHES);
         downloadParameters = downloadParameters.changeMaxThreads(MAX_THREADS);
+
+        websphinxCrawler.setMaxDepth(MAX_DEPTH);
 
         setDownloadParameters(downloadParameters);
         links.addAll(getLinks());
     }
 
-    public static WebsphinxCrawler instance() throws MalformedURLException {
+    public static WebsphinxCrawler crawler() {
         return websphinxCrawler;
     }
 
-
-    public static WebsphinxCrawler withCrawlTimeout(int crawlTimeout) throws MalformedURLException {
+    public static WebsphinxCrawler withCrawlTimeout(int crawlTimeout) {
         downloadParameters = downloadParameters.changeCrawlTimeout(crawlTimeout);
         return websphinxCrawler;
     }
 
-    public static WebsphinxCrawler withLinkTypes(String[] linkTypes) throws MalformedURLException {
+    public static WebsphinxCrawler withObeyRobotExclusion(boolean obeyRobotExclusion) {
+        downloadParameters = downloadParameters.changeObeyRobotExclusion(obeyRobotExclusion);
+        return websphinxCrawler;
+    }
+
+    public static WebsphinxCrawler withUserAgent(String userAgent) {
+        downloadParameters = downloadParameters.changeUserAgent(userAgent);
+        return websphinxCrawler;
+    }
+
+    public static WebsphinxCrawler withMaxPageSize(int maxPageSize) {
+        downloadParameters = downloadParameters.changeMaxPageSize(maxPageSize);
+        return websphinxCrawler;
+    }
+
+    public static WebsphinxCrawler withDownloadTimeout(int downloadTimeout) {
+        downloadParameters = downloadParameters.changeDownloadTimeout(downloadTimeout);
+        return websphinxCrawler;
+    }
+
+
+    public static WebsphinxCrawler withUseCaches(boolean useCaches) {
+        downloadParameters = downloadParameters.changeUseCaches(useCaches);
+        return websphinxCrawler;
+    }
+
+
+    public static WebsphinxCrawler withMaxThreads(int maxThreads) {
+        downloadParameters = downloadParameters.changeMaxThreads(maxThreads);
+        return websphinxCrawler;
+    }
+
+
+    public static WebsphinxCrawler withLinkTypes(String[] linkTypes) {
         websphinxCrawler.setLinkType(linkTypes);
         return websphinxCrawler;
     }
@@ -67,18 +101,21 @@ public class WebsphinxCrawler extends Crawler {
         return websphinxCrawler;
     }
 
-    public static WebsphinxCrawler withDepth(int depth) throws MalformedURLException {
+    public static WebsphinxCrawler withDepth(int depth) {
         websphinxCrawler.setMaxDepth(depth);
         return websphinxCrawler;
     }
 
 
+    public WebsphinxCrawler build() {
+        setDownloadParameters(downloadParameters);
+        return this;
+    }
+
     @Override
     public void visit(Page page) {
 
         links.add(page.getURL().toString());
-
-        // Print out some stats about the crawler every 10 pages visited
         int n = this.getPagesVisited();
         if (n % LOG_MODULO == 0) {
             System.out.println(String.valueOf(this.getPagesVisited()) + " pages visited.  " + this
